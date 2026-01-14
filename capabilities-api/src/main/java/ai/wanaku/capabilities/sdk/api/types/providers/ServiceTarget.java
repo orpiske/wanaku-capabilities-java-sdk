@@ -11,10 +11,11 @@ import java.util.Objects;
  */
 public class ServiceTarget implements WanakuEntity<String> {
     private String id;
-    private String service;
+    private String serviceName;
     private String host;
     private int port;
-    private ServiceType serviceType;
+    private String serviceType;
+    private String serviceSubType;
 
     /**
      * Default constructor for ServiceTarget.
@@ -25,17 +26,19 @@ public class ServiceTarget implements WanakuEntity<String> {
      * Constructs a new instance of {@link ServiceTarget}.
      *
      * @param id             The unique identifier for the service.
-     * @param service        The name of the service.
+     * @param serviceName    The name of the service.
      * @param host           The host address of the service.
      * @param port           The port number of the service.
-     * @param serviceType    The type of service, either RESOURCE_PROVIDER or TOOL_INVOKER.
+     * @param serviceType    The type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
+     * @param serviceSubType The subtype of the service (e.g., "jvm", "interpreted").
      */
-    public ServiceTarget(String id, String service, String host, int port, ServiceType serviceType) {
+    public ServiceTarget(String id, String serviceName, String host, int port, String serviceType, String serviceSubType) {
         this.id = id;
-        this.service = service;
+        this.serviceName = serviceName;
         this.host = host;
         this.port = port;
         this.serviceType = serviceType;
+        this.serviceSubType = serviceSubType;
     }
 
     /**
@@ -43,8 +46,17 @@ public class ServiceTarget implements WanakuEntity<String> {
      *
      * @return The name of the service.
      */
-    public String getService() {
-        return service;
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    /**
+     * Sets the name of the service.
+     *
+     * @param serviceName The name of the service.
+     */
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     /**
@@ -66,12 +78,39 @@ public class ServiceTarget implements WanakuEntity<String> {
     }
 
     /**
-     * Gets the type of service, either RESOURCE_PROVIDER or TOOL_INVOKER.
+     * Gets the type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
      *
      * @return The type of service.
      */
-    public ServiceType getServiceType() {
+    public String getServiceType() {
         return serviceType;
+    }
+
+    /**
+     * Sets the type of service.
+     *
+     * @param serviceType The type of service.
+     */
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    /**
+     * Gets the subtype of the service (e.g., "jvm", "interpreted").
+     *
+     * @return The subtype of the service, or null if not specified.
+     */
+    public String getServiceSubType() {
+        return serviceSubType;
+    }
+
+    /**
+     * Sets the subtype of the service.
+     *
+     * @param serviceSubType The subtype of the service.
+     */
+    public void setServiceSubType(String serviceSubType) {
+        this.serviceSubType = serviceSubType;
     }
 
     /**
@@ -101,36 +140,53 @@ public class ServiceTarget implements WanakuEntity<String> {
         ServiceTarget that = (ServiceTarget) o;
         return port == that.port
                 && Objects.equals(id, that.id)
-                && Objects.equals(service, that.service)
+                && Objects.equals(serviceName, that.serviceName)
                 && Objects.equals(host, that.host)
-                && serviceType == that.serviceType;
+                && Objects.equals(serviceType, that.serviceType)
+                && Objects.equals(serviceSubType, that.serviceSubType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, service, host, port, serviceType);
+        return Objects.hash(id, serviceName, host, port, serviceType, serviceSubType);
     }
 
     @Override
     public String toString() {
         return "ServiceTarget{" + "id='"
-                + id + '\'' + ", service='"
-                + service + '\'' + ", host='"
+                + id + '\'' + ", serviceName='"
+                + serviceName + '\'' + ", host='"
                 + host + '\'' + ", port="
-                + port + ", serviceType="
-                + serviceType + '}';
+                + port + ", serviceType='"
+                + serviceType + '\'' + ", serviceSubType='"
+                + serviceSubType + '\'' + '}';
     }
 
     /**
      * Creates a new instance of {@link ServiceTarget} with the specified parameters with the given service type.
      *
-     * @param service The name of the service.
+     * @param serviceName The name of the service.
      * @param address The host address of the service.
      * @param port The port number of the service.
-     * @param serviceType The type of service (RESOURCE_PROVIDER, TOOL_INVOKER, or MULTI_CAPABILITY).
+     * @param serviceType The type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
+     * @param serviceSubType The subtype of the service (e.g., "jvm", "interpreted"), or null if not applicable.
      * @return A new instance of {@link ServiceTarget}.
      */
-    public static ServiceTarget newEmptyTarget(String service, String address, int port, ServiceType serviceType) {
-        return new ServiceTarget(null, service, address, port, serviceType);
+    public static ServiceTarget newEmptyTarget(String serviceName, String address, int port, String serviceType, String serviceSubType) {
+        return new ServiceTarget(null, serviceName, address, port, serviceType, serviceSubType);
+    }
+
+    /**
+     * Creates a new instance of {@link ServiceTarget} with the specified parameters without a service subtype.
+     * This is a convenience method for services that don't require a subtype.
+     *
+     * @param serviceName The name of the service.
+     * @param address The host address of the service.
+     * @param port The port number of the service.
+     * @param serviceType The type of service (e.g., "resource-provider", "tool-invoker").
+     * @return A new instance of {@link ServiceTarget}.
+     */
+    public static ServiceTarget newEmptyTarget(String serviceName, String address, int port, String serviceType) {
+        return new ServiceTarget(null, serviceName, address, port, serviceType, null);
     }
 }
