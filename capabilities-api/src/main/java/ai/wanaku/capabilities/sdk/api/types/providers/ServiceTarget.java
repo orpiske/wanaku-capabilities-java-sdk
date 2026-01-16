@@ -16,6 +16,9 @@ public class ServiceTarget implements WanakuEntity<String> {
     private int port;
     private String serviceType;
     private String serviceSubType;
+    private String languageName;
+    private String languageType;
+    private String languageSubType;
 
     /**
      * Default constructor for ServiceTarget.
@@ -25,20 +28,27 @@ public class ServiceTarget implements WanakuEntity<String> {
     /**
      * Constructs a new instance of {@link ServiceTarget}.
      *
-     * @param id             The unique identifier for the service.
-     * @param serviceName    The name of the service.
-     * @param host           The host address of the service.
-     * @param port           The port number of the service.
-     * @param serviceType    The type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
-     * @param serviceSubType The subtype of the service (e.g., "jvm", "interpreted").
+     * @param id                The unique identifier for the service.
+     * @param serviceName       The name of the service.
+     * @param host              The host address of the service.
+     * @param port              The port number of the service.
+     * @param serviceType       The type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
+     * @param serviceSubType    The subtype of the service (e.g., "jvm", "interpreted").
+     * @param languageName      The name of the programming language (e.g., "Java", "Python").
+     * @param languageType      The type of the language (e.g., "compiled", "interpreted").
+     * @param languageSubType   The subtype of the language (e.g., "jvm", "cpython").
      */
-    public ServiceTarget(String id, String serviceName, String host, int port, String serviceType, String serviceSubType) {
+    public ServiceTarget(String id, String serviceName, String host, int port, String serviceType, String serviceSubType, 
+                        String languageName, String languageType, String languageSubType) {
         this.id = id;
         this.serviceName = serviceName;
         this.host = host;
         this.port = port;
         this.serviceType = serviceType;
         this.serviceSubType = serviceSubType;
+        this.languageName = languageName;
+        this.languageType = languageType;
+        this.languageSubType = languageSubType;
     }
 
     /**
@@ -114,6 +124,60 @@ public class ServiceTarget implements WanakuEntity<String> {
     }
 
     /**
+     * Gets the name of the programming language.
+     *
+     * @return The name of the programming language, or null if not specified.
+     */
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    /**
+     * Sets the name of the programming language.
+     *
+     * @param languageName The name of the programming language.
+     */
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
+    }
+
+    /**
+     * Gets the type of the language (e.g., "compiled", "interpreted").
+     *
+     * @return The type of the language, or null if not specified.
+     */
+    public String getLanguageType() {
+        return languageType;
+    }
+
+    /**
+     * Sets the type of the language.
+     *
+     * @param languageType The type of the language.
+     */
+    public void setLanguageType(String languageType) {
+        this.languageType = languageType;
+    }
+
+    /**
+     * Gets the subtype of the language (e.g., "jvm", "cpython").
+     *
+     * @return The subtype of the language, or null if not specified.
+     */
+    public String getLanguageSubType() {
+        return languageSubType;
+    }
+
+    /**
+     * Sets the subtype of the language.
+     *
+     * @param languageSubType The subtype of the language.
+     */
+    public void setLanguageSubType(String languageSubType) {
+        this.languageSubType = languageSubType;
+    }
+
+    /**
      * Returns a string representation of the service address in the format "host:port".
      *
      * @return A string representation of the service address.
@@ -143,12 +207,16 @@ public class ServiceTarget implements WanakuEntity<String> {
                 && Objects.equals(serviceName, that.serviceName)
                 && Objects.equals(host, that.host)
                 && Objects.equals(serviceType, that.serviceType)
-                && Objects.equals(serviceSubType, that.serviceSubType);
+                && Objects.equals(serviceSubType, that.serviceSubType)
+                && Objects.equals(languageName, that.languageName)
+                && Objects.equals(languageType, that.languageType)
+                && Objects.equals(languageSubType, that.languageSubType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, serviceName, host, port, serviceType, serviceSubType);
+        return Objects.hash(id, serviceName, host, port, serviceType, serviceSubType, 
+                          languageName, languageType, languageSubType);
     }
 
     @Override
@@ -159,26 +227,34 @@ public class ServiceTarget implements WanakuEntity<String> {
                 + host + '\'' + ", port="
                 + port + ", serviceType='"
                 + serviceType + '\'' + ", serviceSubType='"
-                + serviceSubType + '\'' + '}';
+                + serviceSubType + '\'' + ", languageName='"
+                + languageName + '\'' + ", languageType='"
+                + languageType + '\'' + ", languageSubType='"
+                + languageSubType + '\'' + '}';
     }
 
     /**
      * Creates a new instance of {@link ServiceTarget} with the specified parameters with the given service type.
      *
-     * @param serviceName The name of the service.
-     * @param address The host address of the service.
-     * @param port The port number of the service.
-     * @param serviceType The type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
-     * @param serviceSubType The subtype of the service (e.g., "jvm", "interpreted"), or null if not applicable.
+     * @param serviceName       The name of the service.
+     * @param address           The host address of the service.
+     * @param port              The port number of the service.
+     * @param serviceType       The type of service (e.g., "resource-provider", "tool-invoker", "code-execution-engine").
+     * @param serviceSubType    The subtype of the service (e.g., "jvm", "interpreted"), or null if not applicable.
+     * @param languageName      The name of the programming language, or null if not applicable.
+     * @param languageType      The type of the language, or null if not applicable.
+     * @param languageSubType   The subtype of the language, or null if not applicable.
      * @return A new instance of {@link ServiceTarget}.
      */
-    public static ServiceTarget newEmptyTarget(String serviceName, String address, int port, String serviceType, String serviceSubType) {
-        return new ServiceTarget(null, serviceName, address, port, serviceType, serviceSubType);
+    public static ServiceTarget newEmptyTarget(String serviceName, String address, int port, String serviceType, String serviceSubType,
+                                              String languageName, String languageType, String languageSubType) {
+        return new ServiceTarget(null, serviceName, address, port, serviceType, serviceSubType, 
+                               languageName, languageType, languageSubType);
     }
 
     /**
      * Creates a new instance of {@link ServiceTarget} with the specified parameters without a service subtype.
-     * This is a convenience method for services that don't require a subtype.
+     * This is a convenience method for services that don't require a subtype or language information.
      *
      * @param serviceName The name of the service.
      * @param address The host address of the service.
@@ -187,6 +263,6 @@ public class ServiceTarget implements WanakuEntity<String> {
      * @return A new instance of {@link ServiceTarget}.
      */
     public static ServiceTarget newEmptyTarget(String serviceName, String address, int port, String serviceType) {
-        return new ServiceTarget(null, serviceName, address, port, serviceType, null);
+        return new ServiceTarget(null, serviceName, address, port, serviceType, null, null, null, null);
     }
 }
