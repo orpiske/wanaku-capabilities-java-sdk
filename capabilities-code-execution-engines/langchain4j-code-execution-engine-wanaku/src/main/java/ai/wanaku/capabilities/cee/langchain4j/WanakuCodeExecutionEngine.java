@@ -1,6 +1,5 @@
 package ai.wanaku.capabilities.cee.langchain4j;
 
-import ai.wanaku.capabilities.sdk.api.types.WanakuResponse;
 import ai.wanaku.capabilities.sdk.api.types.execution.CodeExecutionEvent;
 import ai.wanaku.capabilities.sdk.api.types.execution.CodeExecutionEventType;
 import ai.wanaku.capabilities.sdk.api.types.execution.CodeExecutionRequest;
@@ -66,10 +65,9 @@ public class WanakuCodeExecutionEngine implements CodeExecutionEngine {
                 engineType, language);
 
         CodeExecutionRequest request = new CodeExecutionRequest(code);
-        WanakuResponse<CodeExecutionResponse> response = client.executeCode(engineType, language, request);
+        CodeExecutionResponse response = client.executeCode(engineType, language, request);
 
-        CodeExecutionResponse executionResponse = response.data();
-        String taskId = executionResponse.taskId();
+        String taskId = response.taskId();
 
         LOG.debug("Code execution task submitted: taskId={}", taskId);
 

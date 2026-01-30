@@ -479,19 +479,19 @@ public class ServicesHttpClient {
      * Example usage:
      * <pre>{@code
      * CodeExecutionRequest request = new CodeExecutionRequest("System.out.println(\"Hello\");");
-     * WanakuResponse<CodeExecutionResponse> response = client.executeCode("jvm", "java", request);
-     * String taskId = response.getData().taskId();
-     * String streamUrl = response.getData().streamUrl();
+     * CodeExecutionResponse response = client.executeCode("jvm", "java", request);
+     * String taskId = response.taskId();
+     * String streamUrl = response.streamUrl();
      * }</pre>
      *
      * @param engineType The type of execution engine (e.g., "jvm", "interpreted").
      * @param language The programming language (e.g., "java", "groovy", "xml").
      * @param request The code execution request containing the code and execution parameters.
-     * @return The response containing the task ID and stream URL wrapped in WanakuResponse.
+     * @return The response containing the task ID and stream URL.
      * @throws WanakuException If an error occurs during the request.
      * @since 1.0.0
      */
-    public WanakuResponse<CodeExecutionResponse> executeCode(
+    public CodeExecutionResponse executeCode(
             String engineType, String language, CodeExecutionRequest request) {
         // Validate the request before sending
         request.validate();

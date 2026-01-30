@@ -1,6 +1,5 @@
 package ai.wanaku.capabilities.cee.langchain4j;
 
-import ai.wanaku.capabilities.sdk.api.types.WanakuResponse;
 import ai.wanaku.capabilities.sdk.api.types.execution.CodeExecutionEvent;
 import ai.wanaku.capabilities.sdk.api.types.execution.CodeExecutionRequest;
 import ai.wanaku.capabilities.sdk.api.types.execution.CodeExecutionResponse;
@@ -10,7 +9,6 @@ import ai.wanaku.capabilities.sdk.common.serializer.Serializer;
 import ai.wanaku.capabilities.sdk.services.ServicesHttpClient;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,9 +105,9 @@ class WanakuCodeExecutionEngineTest {
         String taskId = "test-task-id";
 
         CodeExecutionResponse execResponse = new CodeExecutionResponse(
-                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, Instant.now());
+                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, System.currentTimeMillis());
         when(mockClient.executeCode(eq("jvm"), eq("java"), any(CodeExecutionRequest.class)))
-                .thenReturn(new WanakuResponse<>(execResponse));
+                .thenReturn(execResponse);
 
         doAnswer(invocation -> {
             Consumer<CodeExecutionEvent> consumer = invocation.getArgument(3);
@@ -131,9 +129,9 @@ class WanakuCodeExecutionEngineTest {
         String taskId = "test-task-id";
 
         CodeExecutionResponse execResponse = new CodeExecutionResponse(
-                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, Instant.now());
+                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, System.currentTimeMillis());
         when(mockClient.executeCode(eq("jvm"), eq("java"), any(CodeExecutionRequest.class)))
-                .thenReturn(new WanakuResponse<>(execResponse));
+                .thenReturn(execResponse);
 
         doAnswer(invocation -> {
             Consumer<CodeExecutionEvent> consumer = invocation.getArgument(3);
@@ -156,9 +154,9 @@ class WanakuCodeExecutionEngineTest {
         String taskId = "test-task-id";
 
         CodeExecutionResponse execResponse = new CodeExecutionResponse(
-                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, Instant.now());
+                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, System.currentTimeMillis());
         when(mockClient.executeCode(eq("jvm"), eq("java"), any(CodeExecutionRequest.class)))
-                .thenReturn(new WanakuResponse<>(execResponse));
+                .thenReturn(execResponse);
 
         doAnswer(invocation -> {
             Consumer<CodeExecutionEvent> consumer = invocation.getArgument(3);
@@ -181,9 +179,9 @@ class WanakuCodeExecutionEngineTest {
         String taskId = "test-task-id";
 
         CodeExecutionResponse execResponse = new CodeExecutionResponse(
-                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, Instant.now());
+                taskId, "http://localhost/stream", CodeExecutionStatus.PENDING, System.currentTimeMillis());
         when(mockClient.executeCode(eq("jvm"), eq("java"), any(CodeExecutionRequest.class)))
-                .thenReturn(new WanakuResponse<>(execResponse));
+                .thenReturn(execResponse);
 
         doAnswer(invocation -> {
             Consumer<CodeExecutionEvent> consumer = invocation.getArgument(3);
