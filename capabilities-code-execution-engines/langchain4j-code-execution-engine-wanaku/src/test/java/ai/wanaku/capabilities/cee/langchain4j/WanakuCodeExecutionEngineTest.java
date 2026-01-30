@@ -94,7 +94,7 @@ class WanakuCodeExecutionEngineTest {
     void engineCanBeCreatedWithMockClient() {
         ServicesHttpClient mockClient = mock(ServicesHttpClient.class);
 
-        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java");
+        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java", 10);
 
         assertNotNull(engine);
     }
@@ -115,9 +115,9 @@ class WanakuCodeExecutionEngineTest {
             consumer.accept(CodeExecutionEvent.output(taskId, "Hello, World!"));
             consumer.accept(CodeExecutionEvent.completed(taskId, 0));
             return null;
-        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), any());
+        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), 10, any());
 
-        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java");
+        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java", 10);
         String result = engine.execute("System.out.println(\"Hello, World!\");");
 
         assertEquals("Hello, World!", result);
@@ -138,9 +138,9 @@ class WanakuCodeExecutionEngineTest {
             consumer.accept(CodeExecutionEvent.started(taskId));
             consumer.accept(CodeExecutionEvent.failed(taskId, 1, "Compilation error"));
             return null;
-        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), any());
+        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), 10, any());
 
-        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java");
+        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java", 10);
 
         CodeExecutionException exception = assertThrows(CodeExecutionException.class, () ->
                 engine.execute("invalid code"));
@@ -163,9 +163,9 @@ class WanakuCodeExecutionEngineTest {
             consumer.accept(CodeExecutionEvent.started(taskId));
             consumer.accept(CodeExecutionEvent.timeout(taskId));
             return null;
-        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), any());
+        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), 10, any());
 
-        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java");
+        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java", 10);
 
         CodeExecutionException exception = assertThrows(CodeExecutionException.class, () ->
                 engine.execute("while(true) {}"));
@@ -191,9 +191,9 @@ class WanakuCodeExecutionEngineTest {
             consumer.accept(CodeExecutionEvent.output(taskId, "Line 3\n"));
             consumer.accept(CodeExecutionEvent.completed(taskId, 0));
             return null;
-        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), any());
+        }).when(mockClient).streamCodeExecutionEvents(eq("jvm"), eq("java"), eq(taskId), 10, any());
 
-        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java");
+        WanakuCodeExecutionEngine engine = new WanakuCodeExecutionEngine(mockClient, "jvm", "java", 10);
         String result = engine.execute("print lines");
 
         assertEquals("Line 1\nLine 2\nLine 3\n", result);
