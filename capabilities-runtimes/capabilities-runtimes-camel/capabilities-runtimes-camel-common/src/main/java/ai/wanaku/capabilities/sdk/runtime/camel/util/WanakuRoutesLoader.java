@@ -40,6 +40,14 @@ import org.apache.camel.support.PluginHelper;
 import org.slf4j.Logger;
 import ai.wanaku.capabilities.sdk.runtime.camel.exceptions.RouteLoadingException;
 
+/**
+ * Loads Camel route definitions from resource paths, automatically downloading any required Maven
+ * dependencies before the routes are parsed. This wires dependency-aware resolvers into the
+ * {@link CamelContext} so that components, data formats, languages, and transformers referenced
+ * in the route file are fetched on-the-fly from Maven repositories.
+ *
+ * @see RouteLoadingException
+ */
 public class WanakuRoutesLoader {
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(WanakuRoutesLoader.class);
 
@@ -48,6 +56,14 @@ public class WanakuRoutesLoader {
     private final DependencyDownloaderClassLoader cl;
     private final MavenDependencyDownloader downloader;
 
+    /**
+     * Creates a new loader.
+     *
+     * @param dependenciesList comma-separated Maven coordinates ({@code group:artifact:version}) to
+     *                         download before loading routes, or {@code null} for none
+     * @param repositoriesList comma-separated Maven repository URLs to resolve dependencies from,
+     *                         or {@code null} to use the default repositories
+     */
     public WanakuRoutesLoader(String dependenciesList, String repositoriesList) {
         this.dependenciesList = dependenciesList;
         this.repositoriesList = repositoriesList;
@@ -55,6 +71,14 @@ public class WanakuRoutesLoader {
         this.downloader = createDownloader(cl);
     }
 
+    /**
+     * Downloads required dependencies, registers dependency-aware resolvers on the given context,
+     * loads the route definition from {@code path}, and builds the context.
+     *
+     * @param context the Camel context to load the route into
+     * @param path    the resource path to the route definition (e.g. a YAML or XML route file)
+     * @throws RouteLoadingException if the route cannot be parsed or loaded
+     */
     public void loadRoute(CamelContext context, String path) {
         final ExtendedCamelContext camelContextExtension = context.getCamelContextExtension();
 
@@ -92,6 +116,10 @@ public class WanakuRoutesLoader {
         context.build();
     }
 
+    /**
+     * Downloads each dependency from {@link #dependenciesList} using the Maven downloader and
+     * registers the downloader as a context plugin.
+     */
     private void downloadDependencies(CamelContext camelContext) {
         ExtendedCamelContext camelContextExtension = camelContext.getCamelContextExtension();
 
@@ -113,6 +141,10 @@ public class WanakuRoutesLoader {
         camelContextExtension.addContextPlugin(DependencyDownloader.class, downloader);
     }
 
+    /**
+     * Creates and starts a {@link MavenDependencyDownloader} configured with the given class loader
+     * and optional custom repositories.
+     */
     private MavenDependencyDownloader createDownloader(DependencyDownloaderClassLoader cl) {
         MavenDependencyDownloader downloader = new MavenDependencyDownloader();
         downloader.setClassLoader(cl);
@@ -125,6 +157,7 @@ public class WanakuRoutesLoader {
         return downloader;
     }
 
+    /** Creates a child class loader that the dependency downloader will add downloaded JARs to. */
     private static DependencyDownloaderClassLoader createClassLoader() {
         final ClassLoader parentCL = WanakuRoutesLoader.class.getClassLoader();
 
