@@ -38,6 +38,7 @@ import org.apache.camel.spi.TransformerResolver;
 import org.apache.camel.spi.UriFactoryResolver;
 import org.apache.camel.support.PluginHelper;
 import org.slf4j.Logger;
+import ai.wanaku.capabilities.sdk.runtime.camel.exceptions.RouteLoadingException;
 
 public class WanakuRoutesLoader {
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(WanakuRoutesLoader.class);
@@ -85,8 +86,7 @@ public class WanakuRoutesLoader {
         try {
             loader.loadRoutes(resource);
         } catch (Exception e) {
-            LOG.error("Failed to load routes from {}", path, e);
-            return;
+            throw new RouteLoadingException(path, e);
         }
 
         context.build();
