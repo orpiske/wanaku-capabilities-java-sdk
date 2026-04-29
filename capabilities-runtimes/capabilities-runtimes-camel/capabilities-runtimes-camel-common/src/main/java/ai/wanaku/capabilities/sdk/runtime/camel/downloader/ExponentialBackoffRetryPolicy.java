@@ -28,7 +28,11 @@ public class ExponentialBackoffRetryPolicy implements RetryPolicy {
     public boolean isRetryable(Exception e) {
         if (e instanceof WanakuWebException wex) {
             int status = wex.getStatusCode();
-            // Do not retry client errors (4xx)
+            // Retry 404 because resources may not be available yet at startup
+            if (status == 404) {
+                return true;
+            }
+            // Do not retry other client errors (4xx)
             return status >= 500;
         }
 
