@@ -41,6 +41,22 @@ public final class TokenEndpoint {
         return baseUrl + "/q/oidc/";
     }
 
+    private static final String OIDC_TOKEN_PATH = "/protocol/openid-connect/token";
+
+    /**
+     * Extracts the realm URL from a token endpoint URL by stripping the OIDC token path suffix.
+     * If the URL does not end with the token path, it is returned unchanged.
+     *
+     * @param tokenEndpoint The token endpoint URL.
+     * @return The realm URL.
+     */
+    public static String toRealmUrl(String tokenEndpoint) {
+        if (tokenEndpoint != null && tokenEndpoint.endsWith(OIDC_TOKEN_PATH)) {
+            return tokenEndpoint.substring(0, tokenEndpoint.length() - OIDC_TOKEN_PATH.length());
+        }
+        return tokenEndpoint;
+    }
+
     /**
      * Automatically resolve the best URI to use
      * @param registrationUri

@@ -2,6 +2,7 @@ package ai.wanaku.capabilities.sdk.security;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TokenEndpointTest {
 
@@ -79,6 +80,29 @@ class TokenEndpointTest {
         String expected = "/protocol/openid-connect/token";
 
         assertEquals(expected, result);
+    }
+
+    @Test
+    void toRealmUrlStripsTokenPath() {
+        String tokenEndpoint = "https://auth.example.com/realms/wanaku/protocol/openid-connect/token";
+        assertEquals("https://auth.example.com/realms/wanaku", TokenEndpoint.toRealmUrl(tokenEndpoint));
+    }
+
+    @Test
+    void toRealmUrlPreservesRealmUrl() {
+        String realmUrl = "https://auth.example.com/realms/wanaku";
+        assertEquals(realmUrl, TokenEndpoint.toRealmUrl(realmUrl));
+    }
+
+    @Test
+    void toRealmUrlHandlesCustomRealm() {
+        String tokenEndpoint = "https://auth.example.com/realms/custom-realm/protocol/openid-connect/token";
+        assertEquals("https://auth.example.com/realms/custom-realm", TokenEndpoint.toRealmUrl(tokenEndpoint));
+    }
+
+    @Test
+    void toRealmUrlReturnsNullForNull() {
+        assertNull(TokenEndpoint.toRealmUrl(null));
     }
 
     @Test

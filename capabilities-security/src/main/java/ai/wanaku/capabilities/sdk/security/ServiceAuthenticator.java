@@ -95,8 +95,8 @@ public class ServiceAuthenticator {
      * need.
      */
     private static Issuer resolveIssuer(SecurityServiceConfig config) {
-        // The OpenID provider issuer URL
-        Issuer issuer = new Issuer(config.getTokenEndpoint());
+        // The OpenID provider issuer URL — strip the token endpoint path to get the realm URL
+        Issuer issuer = new Issuer(TokenEndpoint.toRealmUrl(config.getTokenEndpoint()));
 
         try {
             final URL openIdConfigUrl = OIDCProviderMetadata.resolveURL(issuer);
