@@ -49,6 +49,28 @@ class TokenEndpointTest {
     }
 
     @Test
+    void autoResolveUsesFromBaseUrlWhenTokenEndpointEndsWithCustomRealm() {
+        String registrationUri = "https://service.example.com";
+        String tokenEndpointUri = "https://auth.example.com/realms/my-custom-realm/";
+
+        String result = TokenEndpoint.autoResolve(registrationUri, tokenEndpointUri);
+        String expected = "https://auth.example.com/realms/my-custom-realm//protocol/openid-connect/token";
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void autoResolveUsesFromBaseUrlWhenTokenEndpointEndsWithRealmNoTrailingSlash() {
+        String registrationUri = "https://service.example.com";
+        String tokenEndpointUri = "https://auth.example.com/realms/production";
+
+        String result = TokenEndpoint.autoResolve(registrationUri, tokenEndpointUri);
+        String expected = "https://auth.example.com/realms/production/protocol/openid-connect/token";
+
+        assertEquals(expected, result);
+    }
+
+    @Test
     void autoResolveUsesFromBaseUrlWhenTokenEndpointIsEmpty() {
         String registrationUri = "https://service.example.com";
         String tokenEndpointUri = "";

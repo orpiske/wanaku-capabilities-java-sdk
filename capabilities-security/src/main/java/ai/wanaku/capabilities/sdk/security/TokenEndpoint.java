@@ -49,7 +49,7 @@ public final class TokenEndpoint {
      */
     public static String autoResolve(String registrationUri, String tokenEndpointUri) {
         if (tokenEndpointUri != null) {
-            if (!tokenEndpointUri.isEmpty() && !tokenEndpointUri.endsWith("/realms/wanaku/")) {
+            if (!tokenEndpointUri.isEmpty() && !tokenEndpointUri.matches(".*/realms/[^/]+/?$")) {
                 return direct(tokenEndpointUri);
             }
 
